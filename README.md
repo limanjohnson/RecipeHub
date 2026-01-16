@@ -6,3 +6,6 @@ RecipeHub is an interactive recipe sharing platform designed for food lovers to 
 
 ## Isaac Salirrosas' Favorite Quote
 "Better out than in, I always say" - Shrek
+
+## Liam Nell's Favorite Quote
+"Do or do not, there is no try" - Yoda
