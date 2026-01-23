@@ -4,9 +4,6 @@ import { LogIn, User, UserCircle, Search, LogOut } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 
-const supabase = await createClient()
-const { data: { user } } = await supabase.auth.getUser()
-
 export const metadata: Metadata = {
   title: "Recipe Hub",
   description: "Create, share, and discover recipes",
