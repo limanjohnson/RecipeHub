@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import Link from 'next/link';
 import { LogIn, User, UserCircle, Search, LogOut } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
@@ -31,20 +32,20 @@ export default async function RootLayout({
             TODO: Search Bar
           </header> */}
           <nav className="flex flex-col w-48 p-4 justify-between bg-gray-100 m-1 rounded-lg text-gray-700">
-            <a href="/" className="p-2 text-2xl font-bold relative group">
+            <Link href="/" className="p-2 text-2xl font-bold relative group">
             RecipeHub
             <span className="absolute bottom-0 left-0 w-0 h-1 bg-orange-500 group-hover:w-full transition-all duration-300"></span>
-            </a>
+            </Link>
             <div className="flex flex-col gap-2">
               <div className="p-2 border rounded-lg hover:bg-gray-300 transition duration-300">
-              <a href="/recipes" className="flex gap-2"><Search />Browse</a>
+              <Link href="/recipes" className="flex gap-2"><Search />Browse</Link>
               
             </div>
               {user && (
                 <div className="p-2 border rounded-lg hover:bg-gray-300 transition duration-300">
-                  <a href="/dashboard" className="flex gap-2">
+                  <Link href="/dashboard" className="flex gap-2">
                     <UserCircle size={20} /> Dashboard
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>

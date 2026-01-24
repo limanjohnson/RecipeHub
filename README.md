@@ -8,7 +8,7 @@ RecipeHub is an interactive recipe sharing platform designed for food lovers to 
 "Better out than in, I always say" - Shrek
 
 ## Liam Nell's Favorite Quote
-"Do or do not, there is no try" - Yoda2
+"Do or do not, there is no try" - Yoda
 
 ## Malcolm Nkomo Favorite Qoute
 "Come what may and love it!"
