@@ -1,11 +1,12 @@
 'use client'
 
-import { useEffect, useState, FormEvent } from 'react'
-import { updateRecipe } from '@/lib/recipes'
+import { use, useEffect, useState, FormEvent } from 'react'
+import { updateRecipe, uploadRecipeImage } from '@/lib/recipes'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
-export default function EditRecipePage({ params }: { params: { id: string } }) {
+export default function EditRecipePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const supabase = createClient()
   const router = useRouter()
   const [recipe, setRecipe] = useState<any>(null)
@@ -14,7 +15,7 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
     supabase
       .from('recipes')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
       .then(({ data }) => setRecipe(data))
   }, [])
@@ -23,9 +24,16 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
     e.preventDefault()
     const form = new FormData(e.currentTarget)
 
-    await updateRecipe(Number(params.id), {
+    let image_url: string | undefined
+    const imageFile = form.get('recipeImage') as File | null
+    if (imageFile && imageFile.size > 0) {
+      image_url = await uploadRecipeImage(imageFile)
+    }
+
+    await updateRecipe(Number(id), {
       title: form.get('title') as string,
       description: form.get('description') as string,
+      ...(image_url && { image_url }),
     })
 
     router.push('/dashboard')
@@ -34,13 +42,66 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
   if (!recipe) return <p>Loading...</p>
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 space-y-4">
+    <form onSubmit={handleSubmit} className="flex flex-col p-6 space-y-4">
       <h1 className="text-2xl font-bold">Edit Recipe</h1>
 
-      <input name="title" defaultValue={recipe.title} />
-      <textarea name="description" defaultValue={recipe.description} />
+      <input name="title" defaultValue={recipe.title} className="
+          input
+          rounded
+          focus:outline-none
+          focus-visible:ring-2
+          focus-visible:ring-orange-500
+          focus-visible:ring-offset-2
+          bg-gray-200
+          p-2
+        "  />
 
-      <button className="bg-orange-500 text-white px-4 py-2 rounded">
+      <label className="
+        block 
+        mb-2.5 
+        text-sm 
+        font-medium 
+        text-heading
+      " 
+      htmlFor="recipeImage">Recipe Image</label>
+
+      {recipe.image_url && (
+        <img src={recipe.image_url} alt="Current" className="w-full h-48 object-cover rounded" />
+      )}
+
+      <input className="
+        cursor-pointer
+        border
+        rounded
+        bg-gray-200
+        transition
+        duration-100
+        hover:border-orange-500
+        hover:shadow-md
+        file:mr-4 file:py-2 file:px-4
+        file:rounded-l file:border-0
+        file:text-sm file:font-semibold
+        file:bg-gray-300 file:text-gray-700
+        hover:file:bg-gray-400
+        file:border-r file:border-gray-400
+      "
+      type="file" name="recipeImage" accept="image/*" />
+
+      <textarea name="description" defaultValue={recipe.description} 
+        className="
+          input
+          rounded
+          focus:outline-none
+          focus-visible:ring-2
+          focus-visible:ring-orange-500
+          focus-visible:ring-offset-2
+          bg-gray-200
+          p-2
+          "   
+        rows={10}
+      />
+
+      <button className="cursor pointer bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition duration-200" type="submit">
         Update Recipe
       </button>
     </form>

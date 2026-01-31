@@ -1,4 +1,5 @@
 import { getPublicRecipes } from '@/lib/recipes'
+import RecipeCard from '@/components/RecipeCard'
 
 export default async function BrowseRecipesPage() {
   const recipes = await getPublicRecipes()
@@ -7,15 +8,9 @@ export default async function BrowseRecipesPage() {
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Browse Recipes</h1>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-6xl mx-auto">
         {recipes?.map(recipe => (
-          <div
-            key={recipe.id}
-            className="border rounded-lg p-4 hover:shadow"
-          >
-            <h2 className="text-xl font-semibold">{recipe.title}</h2>
-            <p className="text-gray-600">{recipe.description}</p>
-          </div>
+          <RecipeCard key={recipe.id} recipe={recipe} />
         ))}
       </div>
     </div>

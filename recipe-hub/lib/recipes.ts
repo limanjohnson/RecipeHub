@@ -10,7 +10,7 @@ export async function getPublicRecipes() {
     .eq('is_public', true)
     .order('created_at', { ascending: false })
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data
 }
 
@@ -21,7 +21,7 @@ export async function getUserRecipes(userId: string) {
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data
 }
 
@@ -32,7 +32,7 @@ export async function createRecipe(recipe: Omit<Recipe, 'id' | 'created_at'>) {
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data
 }
 
@@ -47,7 +47,7 @@ export async function updateRecipe(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data
 }
 
@@ -57,5 +57,23 @@ export async function deleteRecipe(id: number) {
     .delete()
     .eq('id', id)
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
+}
+
+export async function uploadRecipeImage(file: File) {
+  const filePath = `${Date.now()}-${file.name}`
+
+  const { error } = await supabase
+    .storage
+    .from('recipe-images')
+    .upload(filePath, file)
+
+  if (error) throw new Error(error.message)
+
+  const { data: { publicUrl } } = supabase
+    .storage
+    .from('recipe-images')
+    .getPublicUrl(filePath)
+
+  return publicUrl
 }

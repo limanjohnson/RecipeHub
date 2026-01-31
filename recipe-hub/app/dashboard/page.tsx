@@ -5,6 +5,7 @@ import { getUserRecipes, deleteRecipe } from '@/lib/recipes'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import { Recipe } from '@/types/recipe'
+import RecipeCard from '@/components/RecipeCard'
 
 export default function DashboardPage() {
   const supabase = createClient()
@@ -41,36 +42,16 @@ export default function DashboardPage() {
 
       {recipes.length === 0 && <p>No recipes yet.</p>}
 
-      <ul className="space-y-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-6xl mx-auto">
         {recipes.map(recipe => (
-          <li
+          <RecipeCard
             key={recipe.id}
-            className="border p-4 rounded flex justify-between"
-          >
-            <div>
-              <h2 className="font-semibold">{recipe.title}</h2>
-              <p className="text-sm text-gray-500">
-                {recipe.is_public ? 'Public' : 'Private'}
-              </p>
-            </div>
-
-            <div className="flex gap-4">
-              <Link
-                href={`/dashboard/edit/${recipe.id}`}
-                className="text-blue-600"
-              >
-                Edit
-              </Link>
-              <button
-                onClick={() => handleDelete(recipe.id)}
-                className="text-red-600"
-              >
-                Delete
-              </button>
-            </div>
-          </li>
+            recipe={recipe}
+            showActions
+            onDelete={handleDelete}
+          />
         ))}
-      </ul>
+      </div>
     </div>
   )
 }

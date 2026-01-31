@@ -1,29 +1,31 @@
 "use client"
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const router = useRouter()
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
-    const form = new FormData(e.currentTarget)
-    const res = await fetch('/api/auth/login', { method: 'POST', body: form })
+    try {
+      const form = new FormData(e.currentTarget)
+      const res = await fetch('/api/auth/login', { method: 'POST', body: form })
 
-    if (!res.ok) {
-      const payload = await res.json().catch(() => null)
-      setError(payload?.error ?? 'Login failed')
+      if (!res.ok) {
+        const payload = await res.json().catch(() => null)
+        setError(payload?.error ?? 'Login failed')
+        setLoading(false)
+        return
+      }
+      window.location.href = '/dashboard'
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed')
       setLoading(false)
-      return
     }
-
-    router.push('/dashboard')
   }
 
   return (
